@@ -1,0 +1,1 @@
+searchState.loadedDescShard("cu29_helpers", 0, "This is a basic setup for a copper application to get you …")
