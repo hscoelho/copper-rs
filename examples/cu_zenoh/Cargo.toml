@@ -1,0 +1,17 @@
+[package]
+name = "cu_zenoh"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+homepage.workspace = true
+repository.workspace = true
+description = "Copper example using Zenoh."
+
+[dependencies]
+bincode = { workspace = true }      # needed
+cu29 = { workspace = true }
+cu29-helpers = { workspace = true }
+zenoh = "1.2.1"
