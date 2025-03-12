@@ -14,4 +14,5 @@ description = "Copper example using Zenoh."
 bincode = { workspace = true }      # needed
 cu29 = { workspace = true }
 cu29-helpers = { workspace = true }
+tokio = "1.44.0"
 zenoh = "1.2.1"

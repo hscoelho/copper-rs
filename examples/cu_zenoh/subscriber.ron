@@ -1,0 +1,15 @@
+(
+    tasks: [
+        (
+            id: "sub",
+            type: "ZenohSubscriberTask",
+        ),
+        (
+            id: "sink",
+            type: "Logger",
+        ),
+     ],
+    cnx: [
+        (src: "sub",  dst: "sink", msg: "String"),
+    ],
+)
