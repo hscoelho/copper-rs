@@ -1,33 +1,48 @@
 use cu29::prelude::*;
 use cu29_helpers::basic_copper_setup;
 use std::path::PathBuf;
+use zenoh::Session;
+use zenoh::Wait;
 
 #[copper_runtime(config = "publisher.ron")]
 struct PublisherApplication {}
 
-pub struct ZenohPublisherTask {}
+pub struct ZenohPublisherTask {
+    session: Session,
+}
 impl Freezable for ZenohPublisherTask {}
 
 impl<'cl> CuSinkTask<'cl> for ZenohPublisherTask {
-    type Input = input_msg!('cl, i32);
+    type Input = input_msg!('cl, u8);
     fn new(_config: Option<&ComponentConfig>) -> CuResult<Self> {
-        Ok(Self {})
+        let session = zenoh::open(zenoh::Config::default()).wait().unwrap();
+        Ok(Self { session })
     }
 
     fn process(&mut self, _clock: &RobotClock, input: Self::Input) -> CuResult<()> {
-        println!("Input received: {}", input.payload().unwrap());
+        let val = input.payload().unwrap();
+        println!("Input received: {}", val);
+
+        self.session.put("topic", [*val]).wait().unwrap();
+        println!("Published zenoh message: {}", val);
         Ok(())
     }
 }
 
+impl Drop for ZenohPublisherTask {
+    fn drop(&mut self) {
+        self.session.close().wait().unwrap();
+    }
+}
+
 pub struct ValueSupplierTask {
-    pub value: i32,
+    pub value: u8,
 }
 
 impl Freezable for ValueSupplierTask {}
 
 impl<'cl> CuSrcTask<'cl> for ValueSupplierTask {
-    type Output = output_msg!('cl, i32);
+    type Output = output_msg!('cl, u8);
     fn new(_config: Option<&ComponentConfig>) -> CuResult<Self> {
         Ok(Self { value: 42 })
     }

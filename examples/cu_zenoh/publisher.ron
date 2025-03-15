@@ -10,6 +10,6 @@
         ),
      ],
     cnx: [
-        (src: "src",  dst: "pub", msg: "i32"),
+        (src: "src",  dst: "pub", msg: "u8"),
     ],
 )

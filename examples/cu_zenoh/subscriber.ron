@@ -6,7 +6,7 @@
         ),
         (
             id: "sink",
-            type: "Logger",
+            type: "PrintTask",
         ),
      ],
     cnx: [
