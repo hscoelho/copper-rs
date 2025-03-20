@@ -1,24 +1,15 @@
 (
     tasks: [
         (
-            id: "str_src",
-            type: "StrSrcTask",
+            id: "src",
+            type: "SrcTask",
         ),
         (
-            id: "str_sink",
-            type: "StrSinkTask",
-        ),
-        (
-            id: "int_src",
-            type: "IntSrcTask",
-        ),
-        (
-            id: "int_sink",
-            type: "IntSinkTask",
+            id: "sink",
+            type: "SinkTask",
         ),
      ],
     cnx: [
-        (src: "str_src", dst: "str_sink", msg: "String"),
-        (src: "int_src", dst: "int_sink", msg: "i64"),
+        (src: "src", dst: "sink", msg: "String"),
     ],
 )
