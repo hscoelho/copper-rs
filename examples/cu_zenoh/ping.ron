@@ -1,0 +1,30 @@
+(
+    tasks: [
+        (
+            id: "ping",
+            type: "PingTask",
+        ),
+        (
+            id: "pub",
+            type: "cu_zenoh::ZenohPublisherTask",
+            config: {
+              "topic": "ping"
+            }
+        ),
+        (
+            id: "sub",
+            type: "cu_zenoh::ZenohSubscriberTask",
+            config: {
+              "topic": "pong"
+            }
+        ),
+        (
+            id: "pong_handler",
+            type: "PongHandlerTask",
+        ),
+     ],
+    cnx: [
+        (src: "ping",  dst: "pub", msg: "String"),
+        (src: "sub",  dst: "pong_handler", msg: "String"),
+    ],
+)
