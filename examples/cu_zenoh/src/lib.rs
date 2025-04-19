@@ -5,20 +5,21 @@ use zenoh::sample::Sample;
 use zenoh::Session;
 use zenoh::Wait;
 
-// TODO: Remove all the unwraps
-
 pub struct ZenohPublisherTask {
     session: Session,
     // TODO: Store a publisher instead of the topic
     topic: String,
 }
+
 impl Freezable for ZenohPublisherTask {}
 
 impl<'cl> CuSinkTask<'cl> for ZenohPublisherTask {
     type Input = input_msg!('cl, String);
     fn new(config: Option<&ComponentConfig>) -> CuResult<Self> {
         let config = config.ok_or_else(|| CuError::from("You need a config."))?;
-        let session = zenoh::open(zenoh::Config::default()).wait().unwrap();
+        let session = zenoh::open(zenoh::Config::default())
+            .wait()
+            .map_err(|_| CuError::from("Failed to open zenoh session"))?;
         let topic = config
             .get::<String>("topic")
             .ok_or_else(|| CuError::from("You need a topic"))?;
@@ -28,7 +29,10 @@ impl<'cl> CuSinkTask<'cl> for ZenohPublisherTask {
 
     fn process(&mut self, _clock: &RobotClock, input: Self::Input) -> CuResult<()> {
         if let Some(val) = input.payload() {
-            self.session.put(self.topic.clone(), val).wait().unwrap();
+            self.session
+                .put(self.topic.clone(), val)
+                .wait()
+                .map_err(|_| CuError::from("Failed to publish value"))?;
         }
         Ok(())
     }
@@ -47,11 +51,16 @@ impl<'cl> CuSrcTask<'cl> for ZenohSubscriberTask {
     type Output = output_msg!('cl, String);
     fn new(config: Option<&ComponentConfig>) -> CuResult<Self> {
         let config = config.ok_or_else(|| CuError::from("You need a config."))?;
-        let session = zenoh::open(zenoh::Config::default()).wait().unwrap();
+        let session = zenoh::open(zenoh::Config::default())
+            .wait()
+            .map_err(|_| CuError::from("Failed to open zenoh session"))?;
         let topic = config
             .get::<String>("topic")
             .ok_or_else(|| CuError::from("You need a topic"))?;
-        let subscriber = session.declare_subscriber(topic).wait().unwrap();
+        let subscriber = session
+            .declare_subscriber(topic)
+            .wait()
+            .map_err(|_| CuError::from("Failed to declare zenoh subscriber."))?;
         Ok(Self {
             _session: session,
             subscriber,
