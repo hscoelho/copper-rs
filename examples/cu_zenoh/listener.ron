@@ -1,0 +1,18 @@
+(
+    tasks: [
+        (
+            id: "listener",
+            type: "cu_zenoh::ZenohSubscriberTask",
+            config: {
+              "topic": "topic"
+            }
+        ),
+        (
+            id: "print",
+            type: "cu_zenoh::PrintTask",
+        ),
+     ],
+    cnx: [
+        (src: "listener",  dst: "print", msg: "Vec<u8>"),
+    ],
+)
