@@ -13,14 +13,14 @@
         ),
         (
             id: "pub",
-            type: "cu_zenoh::ZenohPublisherTask",
+            type: "cu_zenoh::ZenohStringPublisherTask",
             config: {
               "topic": "pong"
             }
         ),
      ],
     cnx: [
-        (src: "sub",  dst: "ping_handler", msg: "String"),
+        (src: "sub",  dst: "ping_handler", msg: "Vec<u8>"),
         (src: "ping_handler",  dst: "pub", msg: "String"),
     ],
 )

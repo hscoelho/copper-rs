@@ -1,6 +1,7 @@
 use cu29::prelude::*;
 use cu29_helpers::basic_copper_setup;
 use std::path::PathBuf;
+use std::str;
 
 #[copper_runtime(config = "pong.ron")]
 struct PongApplication {}
@@ -11,7 +12,7 @@ pub struct PingHandlerTask {}
 impl Freezable for PingHandlerTask {}
 
 impl<'cl> CuTask<'cl> for PingHandlerTask {
-    type Input = input_msg!('cl, String);
+    type Input = input_msg!('cl, Vec<u8>);
     type Output = output_msg!('cl, String);
     fn new(_config: Option<&ComponentConfig>) -> CuResult<Self> {
         Ok(Self {})
@@ -24,7 +25,9 @@ impl<'cl> CuTask<'cl> for PingHandlerTask {
         output: Self::Output,
     ) -> CuResult<()> {
         if let Some(msg) = input.payload() {
-            println!("Message received: {}", msg);
+            let s =
+                str::from_utf8(msg).map_err(|_| CuError::from("Received payload is not utf8"))?;
+            println!("Message received: {}", s);
             let out_msg = "Pong";
             println!("Sending message: {}", out_msg);
             output.set_payload(out_msg.into());

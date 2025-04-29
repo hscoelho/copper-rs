@@ -5,23 +5,6 @@ use std::path::PathBuf;
 #[copper_runtime(config = "ping.ron")]
 struct PingApplication {}
 
-pub struct PongHandlerTask {}
-impl Freezable for PongHandlerTask {}
-
-impl<'cl> CuSinkTask<'cl> for PongHandlerTask {
-    type Input = input_msg!('cl, String);
-    fn new(_config: Option<&ComponentConfig>) -> CuResult<Self> {
-        Ok(Self {})
-    }
-
-    fn process(&mut self, _clock: &RobotClock, input: Self::Input) -> CuResult<()> {
-        if let Some(msg) = input.payload() {
-            println!("Message received: {}", msg);
-        }
-        Ok(())
-    }
-}
-
 pub struct PingTask {
     pinged: bool,
 }

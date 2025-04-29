@@ -6,7 +6,7 @@
         ),
         (
             id: "pub",
-            type: "cu_zenoh::ZenohPublisherTask",
+            type: "cu_zenoh::ZenohStringPublisherTask",
             config: {
               "topic": "ping"
             }
@@ -20,11 +20,11 @@
         ),
         (
             id: "pong_handler",
-            type: "PongHandlerTask",
+            type: "cu_zenoh::PrintTask",
         ),
      ],
     cnx: [
         (src: "ping",  dst: "pub", msg: "String"),
-        (src: "sub",  dst: "pong_handler", msg: "String"),
+        (src: "sub",  dst: "pong_handler", msg: "Vec<u8>"),
     ],
 )
